@@ -1,0 +1,148 @@
+body {
+    margin: 0;
+    padding:0;
+    font: normal 14px "Helvetica", sans-serif;
+    background:white;
+}
+
+.dial-housing {
+    width:320px;
+    height:320px;
+    position:absolute;
+    top:320px;
+    left:0px;
+    overflow:hidden;
+}
+
+.dial {
+  width:316px;
+  height:316px;
+  border-radius:160px;
+  border:2px solid rgb(205,0,0);  
+}
+
+.dial li {
+	list-style:none;
+    width:50px;
+    height:50px;
+    background:rgb(205,205,205);
+    border-radius:3px;
+    text-align:center;
+    font-size:14px;
+    transform-origin:50% 150px;
+    -webkit-transform-origin:50% 150px;
+    position:absolute;
+    top:10px;
+    left:135px;
+    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;  
+}
+
+.dial li span {
+    position:absolute;
+    top:10px;
+    left:16px;
+    font-size:30px;
+    font-weight:bold;
+    line-height:1;
+}
+
+.dial li:nth-child(2) {
+    transform: rotate(36deg);
+    -webkit-transform: rotate(36deg);
+}
+
+.dial li:nth-child(3) {
+    transform: rotate(72deg);
+    -webkit-transform: rotate(72deg);
+}
+
+.dial li:nth-child(4) {
+    transform: rotate(108deg);
+    -webkit-transform: rotate(108deg);
+}
+
+.dial li:nth-child(5) {
+    transform: rotate(144deg);
+    -webkit-transform: rotate(144deg);
+}
+
+.dial li:nth-child(6) {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+
+.dial li:nth-child(7) {
+    transform: rotate(216deg);
+    -webkit-transform: rotate(216deg);
+}
+
+.dial li:nth-child(8) {
+    transform: rotate(252deg);
+    -webkit-transform: rotate(252deg);
+}
+
+.dial li:nth-child(9) {
+    transform: rotate(288deg);
+    -webkit-transform: rotate(288deg);
+}
+
+.dial li:nth-child(10) {
+    transform: rotate(324deg);
+    -webkit-transform: rotate(324deg);
+}
+
+.viewer {
+    width:320px;
+    height:320px;
+    position:absolute;
+    top:50px;
+    left:0px;
+    overflow:hidden;
+}
+
+.viewer ul {
+    position:absolute;
+    top:0;
+    left:0;
+    width:3300px;
+    height:300px;
+}
+
+.viewer li {
+    color:silver;
+    width:300px;
+    height:300px;
+    display:block;
+    float:left;
+    margin:0 10px;
+    padding:0;
+    font-size:12px;
+    line-height:1.5;    
+    text-align:left;
+
+}
+
+.viewer p {
+    padding:7px 10px;
+    margin:0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.art p {
+    position:absolute;
+    top:145px;
+    background:rgba(0,0,0,0.6);
+    width:100%;
+    padding:9px;
+}
+
+.art {
+    position:relative;
+    width:300px;
+    height:181px;
+}
