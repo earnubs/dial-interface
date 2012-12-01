@@ -1,5 +1,8 @@
 YUI().use('node', 'event-move', 'event-touch', function(Y) {
 
+    var controls = Y.all('.dial li');
+    controls.each(transform);
+
 
     // TODO key shortcuts, up, down, left, right, hjkl?
     // TODO gestures
@@ -146,4 +149,13 @@ function degminsec(deg) {
         minInt = ~~min,
         sec = 60 * (min - minInt);
     return [degInt, minInt, sec];
+}
+
+
+function transform(node, index, list) {
+    var rotation = 360/list.size() * index;
+    node.setStyles({
+        'webkitTransform': 'rotate(' + rotation + 'deg)',
+        'transform': 'rotate(' + rotation + 'deg)'
+    });
 }
