@@ -1,4 +1,4 @@
-YUI().use('node', 'event-move', 'event-touch', function(Y) {
+YUI().use('node', 'event-move', 'event-touch', 'event-flick', function(Y) {
 
     var controls = Y.all('.dial li');
     controls.each(transform);
@@ -23,6 +23,12 @@ YUI().use('node', 'event-move', 'event-touch', function(Y) {
 
         handleDrag = function(e) {
 
+            if (e.flick) {
+                console.log('flick');
+                last.X = e.flick.start.pageX;
+                last.Y = e.flick.start.pageY;
+            }
+
             e.preventDefault();
             
             // why is the YUI event facade wrong?
@@ -41,8 +47,8 @@ YUI().use('node', 'event-move', 'event-touch', function(Y) {
             if (isinsidecircle(eX, eY)) {
 
                 // translate origin, invert y axis
-                var hitX = (eX - originX),
-                    hitY = -(eY - originY);
+                hitX = (eX - originX);
+                hitY = -(eY - originY);
 
                 // check if last is defined,
                 //if not return function without this if?
@@ -94,6 +100,11 @@ YUI().use('node', 'event-move', 'event-touch', function(Y) {
 
     dial.on('touchmove', handleDrag);
     dial.on('mousemove', handleDrag);
+    dial.on('flick', handleDrag, {
+        minDistance: 10,
+        minVelocity: 0,
+        preventDefault: true
+    })
     dial.on('touchend', function(e) {
         last = {}
     });

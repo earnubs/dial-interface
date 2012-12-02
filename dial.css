@@ -10,29 +10,29 @@ body {
     width:320px;
     height:320px;
     position:absolute;
-    bottom:-160px;
+    bottom:0px;
     left:50%;
     overflow:hidden;
     margin-left:-160px;
 }
 
 .dial {
-    width:310px;
-    height:310px;
+    width:320px;
+    height:320px;
     border-radius:160px;
-    border:5px solid rgb(217,189,156);
     background-color:rgb(122,176,153);
+    position:relative;
 }
 
 .dial li {
+    position:absolute;
+    border:1px solid black;
     list-style:none;
     width:50px;
     height:50px;
-    border-radius:3px;
     text-align:center;
     transform-origin:50% 150px;
     -webkit-transform-origin:50% 150px;
-    position:absolute;
     top:10px;
     left:135px;
     -webkit-box-sizing: border-box;
@@ -42,9 +42,10 @@ body {
 
 .dial li span {
     position:absolute;
-    top:25px;
-    left:0px;
+    display:inline-block;
     width:50px;
+    top:0px;
+    left:0px;
     text-align:center;
     font-size:11px;
     font-weight:bold;
@@ -86,12 +87,4 @@ body {
 
 .viewer li:nth-child(odd) {
     background-color:rgb(3,140,140);
-}
-
-.viewer p {
-    padding:7px 10px;
-    margin:0;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
 }
