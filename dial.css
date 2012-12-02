@@ -6,6 +6,12 @@ body {
     color: rgb(217,189,156);
 }
 
+.flick {
+    transition-property: transform;
+    transition-duration: 2s;
+    transition-timing-function: ease-out;
+}
+
 .dial-housing {
     width:320px;
     height:320px;
@@ -54,7 +60,7 @@ body {
 
 .viewer {
     width:100%;
-    height:400px;
+    height:100%;
     position:absolute;
     top:0px;
     left:0px;
@@ -64,21 +70,29 @@ body {
 .viewer ul {
     position:absolute;
     top:0;
-    left:0;
-    width:3300px;
-    height:300px;
+    left:50%;
+    width:3000px;
+    height:3000px;
+    margin-left:-1500px;
+    display:block;
+    border-radius:1500px;
 }
 
 .viewer li {
-    width:260px;
-    height:100px;
+    position:absolute;
+    width:500px;
+    height:500px;
     display:block;
-    float:left;
-    margin:0 10px;
-    padding:20px;
     font-size:24px;
     line-height:1.5;
     text-align:center;
+    transform-origin:50% 1490px;
+    -webkit-transform-origin:50% 1490px;
+    top:10px;
+    left:1250px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .viewer li:nth-child(even) {

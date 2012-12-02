@@ -3,11 +3,15 @@ YUI().use('node', 'event-move', 'event-touch', 'event-flick', function(Y) {
     var controls = Y.all('.dial li');
     controls.each(transform);
 
+    var content = Y.all('.viewer li');
+    content.each(transform);
+
 
     // TODO key shortcuts, up, down, left, right, hjkl?
     // TODO gestures
     // TODO add the rotation transforms from here: Math.PI * 2 / list size
     var dial = Y.one('.dial'),
+        wrap = Y.one('.dial-housing'),
         viewer = Y.one('.viewer ul'),
         origin = dial.getXY(),
         rotation = 0,
@@ -23,8 +27,7 @@ YUI().use('node', 'event-move', 'event-touch', 'event-flick', function(Y) {
 
         handleDrag = function(e) {
 
-            if (e.flick) {
-                console.log('flick');
+            if (e.flick && e.flick.start && e.flick.start.pageX) {
                 last.X = e.flick.start.pageX;
                 last.Y = e.flick.start.pageY;
             }
@@ -84,8 +87,8 @@ YUI().use('node', 'event-move', 'event-touch', 'event-flick', function(Y) {
                     });
 
                     viewer.setStyles({
-                        'webkitTransform': 'translate(' + rotation * 8.3 + 'px)',
-                        'transform': 'translate(' + rotation * 8.3 + 'px)'
+                        'webkitTransform': 'rotate(' + rotation + 'deg)',
+                        'transform': 'rotate(' + rotation + 'deg)'
                     });
 
                 }
@@ -98,17 +101,17 @@ YUI().use('node', 'event-move', 'event-touch', 'event-flick', function(Y) {
             }
         };
 
-    dial.on('touchmove', handleDrag);
-    dial.on('mousemove', handleDrag);
-    dial.on('flick', handleDrag, {
+    wrap.on('touchmove', handleDrag);
+    wrap.on('mousemove', handleDrag);
+    wrap.on('flick', handleDrag, {
         minDistance: 10,
         minVelocity: 0,
         preventDefault: true
     })
-    dial.on('touchend', function(e) {
+    wrap.on('touchend', function(e) {
         last = {}
     });
-    dial.on('mouseout', function(e) {
+    wrap.on('mouseout', function(e) {
         last = {}
     });
 
