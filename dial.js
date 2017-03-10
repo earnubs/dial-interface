@@ -39,8 +39,8 @@ YUI().use('node', 'event-move', 'event-touch', 'event-flick', function(Y) {
             e.pageY = e.pageY || e.touches[0].pageY;
 
             var eX = e.pageX - xy[0],
-                eY = e.pageY - xy[1],
-                hitX, hitY, radius, force, x1, y1, x2, y2, r, theta, dir, sign, a1, a2;
+            eY = e.pageY - xy[1],
+            hitX, hitY, radius, force, x1, y1, x2, y2, r, theta, dir, sign, a1, a2;
 
             
 
@@ -164,7 +164,6 @@ function degminsec(deg) {
         sec = 60 * (min - minInt);
     return [degInt, minInt, sec];
 }
-
 
 function transform(node, index, list) {
     var rotation = 360/list.size() * index;
