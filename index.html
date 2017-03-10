@@ -2,10 +2,43 @@
 <title>Dial Component</title>
 
 <style>
+  .wrapper {
+    position: relative;
+    display: inline-block;
+    margin: 20px;
+  }
   .dial {
-    width: 200px;
-    height: 200px;
-    background: silver;
+    z-index: 10;
+    position:relative;
+    background: rgba(0,0,0,0.1);
+    border-radius: 100%;
+    border: 1px solid #ccc;
+  }
+  .dial::after {
+    margin-left: -3px;
+    content: '';
+    display: block;
+    position: absolute;
+    top:0;
+    left:50%;
+    background: red;
+    width: 10px;
+    height: 6px;
+  }
+  .dial:focus {
+    outline:none;
+    box-shadow: 0px 0px 10px 1px #00ff43;
+  }
+  .value {
+    z-index: 0;
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    width: 100%;
+    color: #bbb;
+    font: normal normal 80px/1 Helvetica, sans-serif;
+    font-feature-settings: 'tnum';
+    margin-top:-0.5em;
   }
 </style>
 <div id=content></div>

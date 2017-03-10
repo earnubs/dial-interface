@@ -1,58 +1,86 @@
-import React, { Component } from 'react';
+/* eslint-disable no-console */
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+
+/** props: mass, value, maximum, minimum, width, height **/
 
 export default class Dial extends Component {
 
   constructor(props) {
     super(props);
 
+    this.boundHandleKeyDown = this.handleKeyDown.bind(this);
+    this.boundHandleKeyUp = this.handleKeyUp.bind(this);
     this.boundHandleDrag = this.handleDrag.bind(this);
-    this.state = { rotation: 0 };
+    this.boundHandleLeave = this.handleLeave.bind(this);
+    this.state = {
+      active: false,
+      rotation: 0
+    };
 
   }
 
   componentDidMount() {
-    const width =  this.dialEl.offsetWidth;
-    const height = this.dialEl.offsetHeight;
-
-    //console.log(getOffset(this.dialEl)); // eslint-disable-line no-console
+    const { mass, radius } = this.props;
 
     this._values = {
-      rotation: 0,
       last: {},
-      mass: 500,
-      originX: width / 2,
-      originY: height / 2,
-      xy: getOffset(this.dialEl) // getXY
+      mass,
+      originX: radius,
+      originY: radius,
+      xy: getOffset(this.dialEl)
     };
-
-    //console.log(this._values); // eslint-disable-line no-console
-
-    // https://yuilibrary.com/yui/docs/api/files/dom_js_dom-screen.js.html#l109
   }
 
+  /**
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.active;
+  }
+   **/
+
   render() {
-
-    //console.log(this.state); // eslint-disable-line no-console
-
+    const { radius } = this.props;
     const dialStyle = {
-      WebkitTransform: 'rotate(' + this.state.rotation + 'deg)'
+      WebkitTransform: 'rotate(' + this.state.rotation + 'deg)',
+      width: radius * 2,
+      height: radius * 2
     };
 
-    return <div className="wrapper">
+    return <div className="wrapper" onKeyDown={ this.boundHandleKeyDown } onKeyUp={ this.boundHandleKeyUp } >
       <div
+        tabIndex={1}
         className="dial"
-        ref={ (dial) => { this.dialEl = dial; }}
+        onMouseLeave={ this.boundHandleLeave }
         onMouseMove={ this.boundHandleDrag }
+        ref={ (dial) => { this.dialEl = dial; }}
         style={ dialStyle }
-      >
-      </div>
+      />
+      <div className="value">{ this.state.rotation | 0 }</div>
     </div>;
+  }
+
+  handleKeyDown(e) {
+    this.setState({
+      active: e.nativeEvent.shiftKey
+    });
+  }
+
+  handleKeyUp(e) {
+    this.setState({
+      active: e.nativeEvent.shiftKey
+    });
+  }
+
+  handleLeave() {
+    this._values.last = {};
   }
 
   handleDrag(e) {
     e.preventDefault();
 
+    if (!this.state.active) return;
+
+    const { radius } = this.props;
     const {
       last,
       mass,
@@ -60,70 +88,55 @@ export default class Dial extends Component {
       originY,
       xy
     } = this._values;
-
-    e.pageX = e.pageX || e.touches[0].pageX;
-    e.pageY = e.pageY || e.touches[0].pageY;
-
     const eX = e.pageX - xy[0];
     const eY = e.pageY - xy[1];
 
-    if (isinsidecircle(eX, eY)) {
+    if (isinsidecircle(eX, eY, radius)) {
 
       // translate origin, invert y axis
       const hitX = (eX - originX);
       const hitY = -(eY - originY);
 
-      // check if last is defined,
-      //if not return function without this if?
       if (last.X) {
-
-
-        // a and b are vectors
         const radius = [last.X, last.Y];
         const force = [hitX - last.X, hitY - last.Y];
-
-        const r = magnitude(radius);
-
         const a1 = projection(force, radius);
         const a2 = [force[0] - a1[0], force[1] - a1[1]];
-
         const dir = direction(radius, force);
         const sign = dir && dir / Math.abs(dir);
 
-        this._values.rotation += ((sign * -1) * ((magnitude(a2) * r) / mass));
-
-        //console.log(this._values.rotation); // eslint-disable-line no-console
-
         this.setState({
-          rotation: this._values.rotation
+          rotation: this.state.rotation + ((sign * -1) * ((magnitude(a2) * magnitude(radius)) / mass))
         });
-
-        /**
-        dial.setStyles({
-          'webkitTransform': 'rotate(' + rotation + 'deg)',
-          'transform': 'rotate(' + rotation + 'deg)'
-        });
-
-        viewer.setStyles({
-          'webkitTransform': 'rotate(' + rotation + 'deg)',
-          'transform': 'rotate(' + rotation + 'deg)'
-        });
-        **/
-
       }
-
 
       last.X = hitX;
       last.Y = hitY;
     }
-
   }
-
 }
 
-ReactDOM.render(<Dial />, document.getElementById('content'));
+Dial.defaultProps = {
+  mass: 200
+};
 
-function getOffset(el) {
+Dial.propTypes = {
+  mass: PropTypes.number,
+  radius: PropTypes.number,
+  initialRotation: PropTypes.number
+};
+
+ReactDOM.render(
+  <div>
+    <Dial radius={100} />
+    <Dial radius={100} />
+    <Dial radius={100} />
+    <Dial radius={100} />
+    <Dial radius={100} />
+  </div>,
+  document.getElementById('content'));
+
+export function getOffset(el) {
   el = el.getBoundingClientRect();
 
   return [
@@ -132,7 +145,14 @@ function getOffset(el) {
   ];
 }
 
-function dotproduct(a, b) {
+export function isinsidecircle(x, y, c) {
+  const d = Math.pow(x - c, 2) + Math.pow(y - c, 2);
+  const r = Math.pow(c, 2);
+
+  return (d <= r);
+}
+
+export function dotproduct(a, b) {
   let n = 0;
   const lim = Math.min(a.length, b.length);
 
@@ -141,7 +161,7 @@ function dotproduct(a, b) {
   return n;
 }
 
-function magnitude(a) {
+export function magnitude(a) {
   //return Math.sqrt(radius[0]*radius[0]+radius[1]*radius[1]);
   let n = 0;
   const lim = a.length;
@@ -151,14 +171,14 @@ function magnitude(a) {
   return Math.sqrt(n);
 }
 
-function projection(u, v) {
+export function projection(u, v) {
   // u on v
   const f = dotproduct(u, v) / dotproduct(v, v);
 
   return [(v[0] * f), (v[1] * f)];
 }
 
-function direction(u, v) {
+export function direction(u, v) {
   return (u[0] * v[1]) - (u[1] * v[0]);
 }
 
@@ -167,19 +187,7 @@ function anglebetweenvectors(a, b) {
   return Math.acos(
     dotproduct(a, b) / (magnitude(a) * magnitude(b))) * (180 / Math.PI);
 }
-**/
 
-function isinsidecircle(x, y) {
-  const cx = 150;
-  const cy = 150;
-  const radius = 150;
-  const a = ((x - cx) * (x - cx)) + ((y - cy) * (y - cy));
-  const b = (radius * radius);
-
-  return (a < b);
-}
-
-/**
 function degminsec(deg) {
   const degInt = deg | 0;
   const min = 60 * (deg - degInt);

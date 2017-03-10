@@ -1,5 +1,4 @@
 const { resolve } = require('path');
-const webpack = require('webpack');
 
 module.exports = {
   target: 'web',
@@ -20,12 +19,5 @@ module.exports = {
       use: [ 'babel-loader' ],
       exclude: /node_modules/
     }]
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress:{
-        warnings: false
-      }
-    })
-  ]
+  }
 };

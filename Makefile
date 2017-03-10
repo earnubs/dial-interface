@@ -2,7 +2,7 @@ BABEL = node_modules/.bin/babel
 WEBPACK = node_modules/.bin/webpack
 LINT = node_modules/.bin/eslint
 
-WEBPACK_ARGS = --config webpack.config.js -p
+WEBPACK_ARGS_DEV = --config webpack.config.js -w
 
 SRC = $(shell find src -name "*.js" -type f)
 LIB = $(SRC:src/%.js=lib/%.js)
@@ -14,7 +14,7 @@ build : $(LIB)
 $(LIB) : lib/%.js: src/%.js
 	mkdir -p $(@D)
 	$(LINT) $<
-	$(WEBPACK) $(WEBPACK_ARGS)
+	$(WEBPACK) $(WEBPACK_ARGS_DEV)
 
 clean :
 	rm -rf lib
