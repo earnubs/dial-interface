@@ -4,20 +4,32 @@ import ReactDOM from 'react-dom';
 
 /** props: mass, value, maximum, minimum, width, height **/
 
+const propTypes = {
+  initialRotation: PropTypes.number,
+  mass: PropTypes.number,
+  display: PropTypes.bool,
+  radius: PropTypes.number.isRequired
+};
+
+const defaultProps = {
+  display: false,
+  mass: 200 // mass ~ 1/10 of radius ?
+};
+
+// TODO the outer circumference should never rotate faster than the user contact
+
 export default class Dial extends Component {
 
   constructor(props) {
     super(props);
 
     this.boundHandleKeyDown = this.handleKeyDown.bind(this);
-    this.boundHandleKeyUp = this.handleKeyUp.bind(this);
-    this.boundHandleDrag = this.handleDrag.bind(this);
+    this.boundHandleMouseMove = this.handleMouseMove.bind(this);
+    this.boundHandleTouchMove = this.handleTouchMove.bind(this);
     this.boundHandleLeave = this.handleLeave.bind(this);
     this.state = {
-      active: false,
       rotation: 0
     };
-
   }
 
   componentDidMount() {
@@ -32,54 +44,82 @@ export default class Dial extends Component {
     };
   }
 
-  /**
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextState.active;
-  }
-   **/
-
   render() {
     const { radius } = this.props;
+    const diameter = radius * 2;
+    const wrapperStyle = {
+      width: diameter,
+      height: diameter,
+      position: 'relative',
+      margin: radius / 3 | 0
+    };
     const dialStyle = {
       WebkitTransform: 'rotate(' + this.state.rotation + 'deg)',
-      width: radius * 2,
-      height: radius * 2
+      width: diameter,
+      height:diameter,
+      position: 'absolute'
     };
 
-    return <div className="wrapper" onKeyDown={ this.boundHandleKeyDown } onKeyUp={ this.boundHandleKeyUp } >
+    return (
       <div
-        tabIndex={1}
-        className="dial"
-        onMouseLeave={ this.boundHandleLeave }
-        onMouseMove={ this.boundHandleDrag }
-        ref={ (dial) => { this.dialEl = dial; }}
-        style={ dialStyle }
-      />
-      <div className="value">{ this.state.rotation | 0 }</div>
-    </div>;
+        className="wrapper" style={ wrapperStyle }
+        onKeyDown={ this.boundHandleKeyDown }
+        onKeyUp={ this.boundHandleKeyUp }
+      >
+        <div
+          className="dial"
+          onMouseLeave={ this.boundHandleLeave }
+          onMouseMove={ this.boundHandleMouseMove }
+          onTouchMove={ this.boundHandleTouchMove }
+          onTouchEnd={ this.boundHandleLeave }
+          ref={ (dial) => { this.dialEl = dial; }}
+          style={ dialStyle }
+          tabIndex={1}
+        />
+        <div className="value">{ this.props.display && this.state.rotation | 0 }</div>
+      </div>
+    );
   }
 
   handleKeyDown(e) {
-    this.setState({
-      active: e.nativeEvent.shiftKey
-    });
+    const { keyCode, shiftKey } = e.nativeEvent;
+
+    if (keyCode === 38) {
+      this.setState({
+        rotation: this.state.rotation + this.arrowInc(shiftKey)
+      });
+    }
+
+    if (keyCode === 40) {
+      this.setState({
+        rotation: this.state.rotation - this.arrowInc(shiftKey)
+      });
+    }
   }
 
-  handleKeyUp(e) {
-    this.setState({
-      active: e.nativeEvent.shiftKey
-    });
+  arrowInc(shiftKey) {
+    return shiftKey ? 10 : 1;
   }
 
   handleLeave() {
     this._values.last = {};
   }
 
-  handleDrag(e) {
+  handleMouseMove(e) {
     e.preventDefault();
 
-    if (!this.state.active) return;
+    //if (!this.state.active) return;
+    this.handleMovement(e.pageX, e.pageY);
+  }
 
+  handleTouchMove(e) {
+    e.preventDefault();
+
+    //if (!this.state.active) return;
+    this.handleMovement(e.touches[0].pageX, e.touches[0].pageY);
+  }
+
+  handleMovement(pageX, pageY) {
     const { radius } = this.props;
     const {
       last,
@@ -88,8 +128,8 @@ export default class Dial extends Component {
       originY,
       xy
     } = this._values;
-    const eX = e.pageX - xy[0];
-    const eY = e.pageY - xy[1];
+    const eX = pageX - xy[0];
+    const eY = pageY - xy[1];
 
     if (isinsidecircle(eX, eY, radius)) {
 
@@ -98,15 +138,15 @@ export default class Dial extends Component {
       const hitY = -(eY - originY);
 
       if (last.X) {
-        const radius = [last.X, last.Y];
+        const pf = [last.X, last.Y]; // point of application of force
         const force = [hitX - last.X, hitY - last.Y];
-        const a1 = projection(force, radius);
+        const a1 = projection(force, pf);
         const a2 = [force[0] - a1[0], force[1] - a1[1]];
-        const dir = direction(radius, force);
+        const dir = direction(pf, force);
         const sign = dir && dir / Math.abs(dir);
 
         this.setState({
-          rotation: this.state.rotation + ((sign * -1) * ((magnitude(a2) * magnitude(radius)) / mass))
+          rotation: this.state.rotation + (-sign * ((magnitude(a2) * magnitude(pf)) / mass))
         });
       }
 
@@ -116,25 +156,15 @@ export default class Dial extends Component {
   }
 }
 
-Dial.defaultProps = {
-  mass: 200
-};
-
-Dial.propTypes = {
-  mass: PropTypes.number,
-  radius: PropTypes.number,
-  initialRotation: PropTypes.number
-};
+Dial.propTypes = propTypes;
+Dial.defaultProps = defaultProps;
 
 ReactDOM.render(
   <div>
     <Dial radius={100} />
-    <Dial radius={100} />
-    <Dial radius={100} />
-    <Dial radius={100} />
-    <Dial radius={100} />
   </div>,
-  document.getElementById('content'));
+  document.getElementById('content')
+);
 
 export function getOffset(el) {
   el = el.getBoundingClientRect();
