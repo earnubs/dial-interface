@@ -1,7 +1,7 @@
 onmessage = event => {
   const { data } = event;
-  const { radius, offset, page, previous } = JSON.parse(data);
-  const rotation = getRotation(radius, offset, page, previous);
+  const { radius, resistance, offset, page, previous } = JSON.parse(data);
+  const rotation = getRotation(radius, resistance, offset, page, previous);
   if (rotation) {
     postMessage(JSON.stringify(rotation));
   }
@@ -14,7 +14,7 @@ onmessage = event => {
  * @param {Array.number} client x and y coordinates of bounding client rectangle (window.getBoundingClientRect())
  * @param {Array.number} scroll x and y coordinates of scroll position
  */
-export const getRotation = (radius, offset, page, previous) => {
+export const getRotation = (radius, resistance, offset, page, previous) => {
   let degrees = null;
 
   const x = page[0] - offset[0];
@@ -30,7 +30,7 @@ export const getRotation = (radius, offset, page, previous) => {
       const a2 = [force[0] - a1[0], force[1] - a1[1]];
       const dir = direction(pf, force);
       const sign = dir && dir / Math.abs(dir);
-      degrees = (-sign * (magnitude(a2) * magnitude(pf) / 50));
+      degrees = (-sign * (magnitude(a2) * magnitude(pf) / resistance));
     }
 
     return {
