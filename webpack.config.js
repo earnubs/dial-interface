@@ -15,6 +15,12 @@ module.exports = {
   performance: {
     hints: 'warning'
   },
+  resolve: {
+    alias: {
+      'react-dom$': 'react-dom/profiling',
+      'scheduler/tracing': 'scheduler/tracing-profiling',
+    }
+  },
   module: {
     rules: [{
       test: /\.js$/,

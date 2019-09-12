@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Worker from './rotation.worker.js';
+import PropTypes from 'prop-types';
 
 
 /** props: value, maximum, minimum, width, height **/

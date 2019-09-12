@@ -1,3 +1,4 @@
+/* eslint-env worker */
 onmessage = event => {
   const { data } = event;
   const { radius, resistance, offset, page, previous } = JSON.parse(data);
