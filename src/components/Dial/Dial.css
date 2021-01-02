@@ -1,0 +1,24 @@
+.Dial {
+  z-index: 10;
+  position:relative;
+  border-radius: 100%;
+  box-sizing: border-box;
+  user-select: none;
+  border: 1px solid #415960;
+}
+
+.Dial:focus {
+  outline:none;
+}
+
+.Dial--isActive {
+  border-color: #8dd5d1;
+}
+
+.wrapper:focus {
+  outline:none;
+}
+
+.wrapper:focus .Dial {
+  border-color: #8dd5d1aa;
+}

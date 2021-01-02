@@ -1,0 +1,14 @@
+.Panel {
+  border-top: 3px solid;
+  border-bottom: 3px solid;
+  border-image: paint(separator) 3 0;
+  display: flex;
+  flex-direction: column;
+  width: inherit;
+  padding: 1em;
+  user-select: none;
+}
+
+.Panel > div {
+  margin: 1em;
+}
